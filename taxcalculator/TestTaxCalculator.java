@@ -8,7 +8,7 @@ public class TestTaxCalculator {
 
         String name;
         int age;
-        char category, status, dependant, children, blind;
+        char category, status, dependant, children, blind, prsiCategory;
         double grossIncome1,grossIncome2, pension;
 
         Scanner input = new Scanner(System.in);
@@ -35,11 +35,15 @@ public class TestTaxCalculator {
         blind = input.next().toUpperCase().charAt(0);
         System.out.print("Are you entitled to Dependant Relative tax credit(Y=Yes, N=No): ");
         dependant = input.next().toUpperCase().charAt(0);
+        System.out.print("What is your PRSI Category(F=Full, R=Reduced): ");
+        prsiCategory = input.next().toUpperCase().charAt(0);
 
 
         System.out.print("\n\nTax Paid: " + String.format("%.2f",taxLiability(grossIncome1, status, grossIncome2)));
         System.out.print("\n\nTax Credits: " + String.format("%.2f",taxCredits(age, status, children, blind, dependant,
                                                             grossIncome1, grossIncome2)));
+
+        System.out.print("\n\nPRSI Paid: " + String.format("%.2f",prsi(grossIncome1, grossIncome2, age, status, prsiCategory)));
 
 
 
@@ -173,6 +177,116 @@ public class TestTaxCalculator {
 
         }
         return totalTaxCredits;
+    }
+
+    public static double prsi(double income1, double income2, int age, char status, char category){
+
+        double totalPRSI = 0, sixthOfEarnings,PRSI4PerCent, spouse1PRSI, spouse2PRSI;
+        double weeklyIncome1=income1/52;
+        double weeklyIncome2=income2/52;
+        final double maxPRSICredit=12, fullRate=.04, reducedRate=0.009;
+
+
+
+        if(age >= 66 || (weeklyIncome1 <= 352 && weeklyIncome2 <= 352)){
+            totalPRSI=0;
+
+        }
+        else if(income2 > 0){
+            if(category=='F'){
+                if(weeklyIncome1<=352){
+                    spouse1PRSI=0;
+                }
+                else if(weeklyIncome1 > 424){
+                    spouse1PRSI=(weeklyIncome1*fullRate)*52;
+                }
+                else{
+                    sixthOfEarnings=(weeklyIncome1-352.01)/6;
+                    PRSI4PerCent=weeklyIncome1*fullRate;
+                    spouse1PRSI = (PRSI4PerCent-(maxPRSICredit-sixthOfEarnings))*52;
+                }
+                if(weeklyIncome2<=352){
+                    spouse2PRSI=0;
+                }
+                else if(weeklyIncome2 > 424){
+                    spouse2PRSI=(weeklyIncome2*fullRate)*52;
+                }
+                else{
+                    sixthOfEarnings=(weeklyIncome2-352.01)/6;
+                    PRSI4PerCent=weeklyIncome2*fullRate;
+                    spouse2PRSI = (PRSI4PerCent-(maxPRSICredit-sixthOfEarnings))*52;
+                }
+                totalPRSI=spouse1PRSI+spouse2PRSI;
+
+            }
+            else{
+                if(weeklyIncome1<=352){
+                    spouse1PRSI=0;
+                }
+                else if(weeklyIncome1 > 500){
+                    if(weeklyIncome1<=1443)
+                        spouse1PRSI=(weeklyIncome1*reducedRate)*52;
+                    else
+                        spouse1PRSI=((1443*reducedRate)+((weeklyIncome1-1443)*fullRate))*52;
+                }
+                else{
+                    spouse1PRSI = (weeklyIncome1*reducedRate)*52;
+                }
+                if(weeklyIncome2<=352){
+                    spouse2PRSI=0;
+                }
+                else if(weeklyIncome2 > 500){
+                    if(weeklyIncome2<=1443)
+                        spouse2PRSI=(weeklyIncome2*reducedRate)*52;
+                    else
+                        spouse2PRSI=((1443*reducedRate)+((weeklyIncome2-1443)*fullRate))*52;
+                }
+                else{
+                    spouse2PRSI = (weeklyIncome2*reducedRate)*52;
+                }
+
+                totalPRSI=spouse1PRSI+spouse2PRSI;
+
+            }
+
+        }
+        else{
+            if(category=='F'){
+                if(weeklyIncome1<=352){
+                    totalPRSI=0;
+                }
+                else if(weeklyIncome1 > 424){
+                    totalPRSI=(weeklyIncome1*fullRate)*52;
+                }
+                else{
+                    sixthOfEarnings=(weeklyIncome1-352.01)/6;
+                    PRSI4PerCent=weeklyIncome1*fullRate;
+                    totalPRSI = (PRSI4PerCent-(maxPRSICredit-sixthOfEarnings))*52;
+                }
+
+            }
+            else{
+                if(weeklyIncome1<=352){
+                    totalPRSI=0;
+                }
+                else if(weeklyIncome1 > 500){
+                    if(weeklyIncome1<=1443)
+                        totalPRSI=(weeklyIncome1*reducedRate)*52;
+                    else
+                        totalPRSI=((1443*reducedRate)+((weeklyIncome1-1443)*fullRate))*52;
+                }
+                else{
+                    totalPRSI = (weeklyIncome1*reducedRate)*52;
+                }
+
+
+            }
+
+        }
+        if(totalPRSI<0)
+            return 0;
+        else
+            return totalPRSI;
     }
 
 }
