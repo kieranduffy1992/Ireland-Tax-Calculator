@@ -42,8 +42,8 @@ public class TestTaxCalculator {
         System.out.print("\n\nTax Paid: " + String.format("%.2f",taxLiability(grossIncome1, status, grossIncome2)));
         System.out.print("\n\nTax Credits: " + String.format("%.2f",taxCredits(age, status, children, blind, dependant,
                                                             grossIncome1, grossIncome2)));
-
         System.out.print("\n\nPRSI Paid: " + String.format("%.2f",prsi(grossIncome1, grossIncome2, age, status, prsiCategory)));
+        System.out.print("\n\nUSC Paid: " + String.format("%.2f",usc(grossIncome1, grossIncome2, status, age)));
 
 
 
@@ -58,7 +58,7 @@ public class TestTaxCalculator {
 
     }
 
-    public static double taxLiability(double income1, char status, double income2){
+    public static double taxLiability(double income1, char status, double income2){//needs to be redone
         final double cutOff = 35300;
         final double standardRate = 0.20;
         final double higherRate = 0.40;
@@ -287,6 +287,74 @@ public class TestTaxCalculator {
             return 0;
         else
             return totalPRSI;
+    }
+
+    public static double usc(double income1, double income2, char status, int age) {
+
+        final double rate1 = 0.005, rate2 = 0.02, rate3 = 0.045, rate4 = 0.08;
+        double totalUSC = 0, spouse1USC = 0, spouse2USC = 0;
+
+        switch (status) {
+
+            case 'S':
+                if (age < 70 || (age >= 70 && income1 >= 60000)) {
+                    if (income1 <= 13000)
+                        totalUSC = 0;
+                    else if (income1 > 70044)
+                        totalUSC = (12012 * rate1) + (8472 * rate2) + (49560 * rate3) + ((income1 - 70044) * rate4);
+                    else if (income1 <= 70044 && income1 >= 20484)
+                        totalUSC = (12012 * rate1) + (8472 * rate2) + ((income1 - 20484) * rate3);
+                    else if (income1 <= 20484 && income1 > 13000)
+                        totalUSC = (12012 * rate1) + ((income1 - 12012) * rate2);
+                } else {
+                    if (income1 <= 13000)
+                        totalUSC = 0;
+                    else
+                        totalUSC = (12012 * rate1) + ((income1 - 12012) * rate2);
+                }
+
+            case 'M':
+                if (age < 70 || (age >= 70 && (income1 >= 60000 || income2 >= 60000))) { //problem with 2nd income and over 70
+                    if (income1 <= 13000)
+                        spouse1USC = 0;
+                    else if (income1 > 70044)
+                        spouse1USC = (12012 * rate1) + (8472 * rate2) + (49560 * rate3) + ((income1 - 70044) * rate4);
+                    else if (income1 <= 70044 && income1 >= 20484)
+                        spouse1USC = (12012 * rate1) + (8472 * rate2) + ((income1 - 20484) * rate3);
+                    else if (income1 <= 20484 && income1 > 13000)
+                        spouse1USC = (12012 * rate1) + ((income1 - 12012) * rate2);
+
+                    if (income2 <= 13000)
+                        spouse2USC = 0;
+                    else if (income2 > 70044)
+                        spouse2USC = (12012 * rate1) + (8472 * rate2) + (49560 * rate3) + ((income2 - 70044) * rate4);
+                    else if (income2 <= 70044 && income2 >= 20484)
+                        spouse2USC = (12012 * rate1) + (8472 * rate2) + ((income2 - 20484) * rate3);
+                    else if (income2 <= 20484 && income2 > 13000)
+                        spouse2USC = (12012 * rate1) + ((income2 - 12012) * rate2);
+
+                    totalUSC = spouse1USC + spouse2USC;
+
+                }
+                else{
+                    if(income1 <= 13000)
+                        spouse1USC = 0;
+                    else
+                        spouse1USC = (12012 * rate1) + ((income1 - 12012) * rate2);
+
+                    if(income2 <= 13000)
+                        spouse2USC = 0;
+                    else
+                        spouse2USC = (12012 * rate1) + ((income2 - 12012) * rate2);
+
+                    totalUSC = spouse1USC+spouse2USC;
+
+
+                    }
+
+
+        }
+        return totalUSC;
     }
 
 }
