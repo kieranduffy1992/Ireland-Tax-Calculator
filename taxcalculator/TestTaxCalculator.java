@@ -6,7 +6,7 @@ public class TestTaxCalculator {
     public static void main(String[] args) {
 
 
-        String name;
+        String name = "";
         int age;
         char category, status, dependant, children, blind, prsiCategory;
         double grossIncome1,grossIncome2, pension;
@@ -21,29 +21,37 @@ public class TestTaxCalculator {
         category = input.next().charAt(0);
         System.out.print("Please enter your Pension Contributions(If none, enter 0):");
         pension = input.nextDouble();*/
-        System.out.print("Please enter your Gross Income: ");
-        grossIncome1 = input.nextDouble();
-        System.out.print("Please enter your status(S=Single, M=Married): ");
-        status = input.next().toUpperCase().charAt(0);
-        System.out.print("If Married please enter your spouses income: ");
-        grossIncome2 = input.nextDouble();
+        System.out.print("Please enter your name:");
+        name = input.nextLine();
         System.out.print("Please enter your age:");
         age = input.nextInt();
+        System.out.print("Please enter your status(S=Single, M=Married): ");
+        status = input.next().toUpperCase().charAt(0);
+        System.out.print("Please enter your Gross Income: ");
+        grossIncome1 = input.nextDouble();
+        System.out.print("If Married please enter your spouses income: ");
+        grossIncome2 = input.nextDouble();
+        System.out.print("What is your PRSI Category(F=Full, R=Reduced): ");
+        prsiCategory = input.next().toUpperCase().charAt(0);
         System.out.print("Do You have dependant children(Y=Yes, N=No): ");
         children = input.next().toUpperCase().charAt(0);
         System.out.print("Are you entitled to Blind person tax credit(Y=Yes, N=No): ");
         blind = input.next().toUpperCase().charAt(0);
         System.out.print("Are you entitled to Dependant Relative tax credit(Y=Yes, N=No): ");
         dependant = input.next().toUpperCase().charAt(0);
-        System.out.print("What is your PRSI Category(F=Full, R=Reduced): ");
-        prsiCategory = input.next().toUpperCase().charAt(0);
 
 
-        System.out.print("\n\nTax Paid: " + String.format("%.2f",taxLiability(grossIncome1, status, grossIncome2)));
-        System.out.print("\n\nTax Credits: " + String.format("%.2f",taxCredits(age, status, children, blind, dependant,
-                                                            grossIncome1, grossIncome2)));
-        System.out.print("\n\nPRSI Paid: " + String.format("%.2f",prsi(grossIncome1, grossIncome2, age, status, prsiCategory)));
-        System.out.print("\n\nUSC Paid: " + String.format("%.2f",usc(grossIncome1, grossIncome2, status, age)));
+
+        double taxLiability = CalculateTaxLiability(grossIncome1, status, grossIncome2);
+        double taxCredits = CalculateTaxCredits(age, status, children, blind, dependant,
+                                                            grossIncome1, grossIncome2);
+        double PRSI = CalculatePRSI(grossIncome1, grossIncome2, age, status, prsiCategory);
+        double USC = CalculateUSC(grossIncome1, grossIncome2, status, age);
+
+
+        Taxpayer tp1 = new Taxpayer(name, age, status, grossIncome1, taxLiability, USC, taxCredits, PRSI);
+
+        System.out.println(tp1);
 
 
 
@@ -58,7 +66,7 @@ public class TestTaxCalculator {
 
     }
 
-    public static double taxLiability(double income1, char status, double income2){//needs to be redone
+    public static double CalculateTaxLiability(double income1, char status, double income2){//needs to be redone
         final double cutOff = 35300;
         final double standardRate = 0.20;
         final double higherRate = 0.40;
@@ -101,7 +109,7 @@ public class TestTaxCalculator {
         return taxPaid;
     }
 
-    public static double taxCredits(int age, char status, char children, char blind, char dependant, double income1, double income2){
+    public static double CalculateTaxCredits(int age, char status, char children, char blind, char dependant, double income1, double income2){
         final double ageSingleCredit=245;
         final double ageMarriedCredit=490;
         final double singleCredit=1650;
@@ -179,7 +187,7 @@ public class TestTaxCalculator {
         return totalTaxCredits;
     }
 
-    public static double prsi(double income1, double income2, int age, char status, char category){
+    public static double CalculatePRSI(double income1, double income2, int age, char status, char category){
 
         double totalPRSI = 0, sixthOfEarnings,PRSI4PerCent, spouse1PRSI, spouse2PRSI;
         double weeklyIncome1=income1/52;
@@ -289,7 +297,7 @@ public class TestTaxCalculator {
             return totalPRSI;
     }
 
-    public static double usc(double income1, double income2, char status, int age) {
+    public static double CalculateUSC(double income1, double income2, char status, int age) {
 
         final double rate1 = 0.005, rate2 = 0.02, rate3 = 0.045, rate4 = 0.08;
         double totalUSC = 0, spouse1USC = 0, spouse2USC = 0;
