@@ -47,9 +47,12 @@ public class TestTaxCalculator {
                                                             grossIncome1, grossIncome2);
         double PRSI = CalculatePRSI(grossIncome1, grossIncome2, age, status, prsiCategory);
         double USC = CalculateUSC(grossIncome1, grossIncome2, status, age);
+        double netTax = taxLiability-taxCredits;
+        double totalDeductions = netTax+PRSI+USC;
+        double totalincome = grossIncome1+grossIncome2;
 
 
-        Taxpayer tp1 = new Taxpayer(name, age, status, grossIncome1, taxLiability, USC, taxCredits, PRSI);
+        Taxpayer tp1 = new Taxpayer(name, age, status, totalincome, taxLiability, USC, taxCredits, PRSI, netTax, totalDeductions);
 
         System.out.println(tp1);
 

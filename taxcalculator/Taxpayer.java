@@ -9,8 +9,11 @@ public class Taxpayer {
     private double USC;
     private double taxCredits;
     private double PRSI;
+    private double netTax;
+    private double totalDeductions;
 
-    public Taxpayer(String name, int age, char status, double income, double taxLiability, double USC, double taxCredits, double PRSI) {
+    public Taxpayer(String name, int age, char status, double income, double taxLiability, double USC, double taxCredits,
+                    double PRSI, double netTax, double totalDeductions) {
         setName(name);
         setAge(age);
         setStatus(status);
@@ -19,6 +22,8 @@ public class Taxpayer {
         setUSC(USC);
         setTaxCredits(taxCredits);
         setPRSI(PRSI);
+        setNetTax(netTax);
+        setTotalDeductions(totalDeductions);
     }
 
     public String getName() {
@@ -85,6 +90,23 @@ public class Taxpayer {
         this.PRSI = PRSI;
     }
 
+    public double getTotalDeductions() {
+        return totalDeductions;
+    }
+
+    public void setTotalDeductions(double totalDeductions) {
+        this.totalDeductions = totalDeductions;
+    }
+
+    public double getNetTax() {
+        return netTax;
+    }
+
+    public void setNetTax(double netTax) {
+        this.netTax = netTax;
+    }
+
+
     @Override
     public String toString() {
         return  "Name: " +getName()+
@@ -92,8 +114,14 @@ public class Taxpayer {
                 "\nStatus: " +getStatus()+
                 "\nIncome: " +String.format("%.2f",getIncome())+
                 "\nTax Liability: " +String.format("%.2f",getTaxLiability())+
-                "\nUSC:" +String.format("%.2f",getUSC())+
                 "\nTax Credits: " +String.format("%.2f",getTaxCredits())+
-                "\nPRSI: " +String.format("%.2f",getPRSI());
+                "\nNet Tax: " +String.format("%.2f",getNetTax())+
+                "\nPRSI: " +String.format("%.2f",getPRSI())+
+                "\nUSC:" +String.format("%.2f",getUSC())+
+                "\nTotal Deductions:" +String.format("%.2f",getTotalDeductions())+
+                "\nAnnual Disposable Income:" +String.format("%.2f", getIncome()-getTotalDeductions())+
+                "\nMonthly Disposable Income:" +String.format("%.2f", (getIncome()-getTotalDeductions())/12)+
+                "\nWeekly Disposable Income:" +String.format("%.2f", (getIncome()-getTotalDeductions())/52);
+
     }
 }
