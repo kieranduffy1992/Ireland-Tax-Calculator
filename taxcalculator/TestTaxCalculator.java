@@ -1,5 +1,9 @@
 package taxcalculator;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Scanner;
 
 public class TestTaxCalculator {
@@ -48,6 +52,45 @@ public class TestTaxCalculator {
         Taxpayer tp1 = new Taxpayer(name, age, status, totalincome, taxLiability, USC, taxCredits, PRSI, netTax, totalDeductions);
 
         System.out.println(tp1);
+
+        /*JButton submitButton = new JButton("Calculate Tax");
+        submitButton.setPreferredSize(new Dimension(20,15));
+        addComponent(panel, submitButton, 2, gridy++, 1, 1, normalInsets,
+                GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //DateChooser dateChooser = new DateChooser(EmployeeDetailsGUI.this);
+                //dateChosen = dateChooser.getDateChosen();
+
+                while(nameField.getText().equals("") || ageField.getText().equals("") || incomeField.getText().equals("") ||
+                        spouseIncomeField.getText().equals("")){
+                    JOptionPane.showMessageDialog(null, "Error !! All fields must be entered, Please try again",
+                            "Details Error",JOptionPane.ERROR_MESSAGE);
+                }
+
+
+                if(dateChosen!=null) {
+                    System.out.println(dateChosen.get(Calendar.DATE) + "-" +
+                            dateChosen.get(Calendar.MONTH) + "-" +
+                            dateChosen.get(Calendar.YEAR));
+
+                    String dayString="", monthString="";
+
+                    if(dateChosen.get(Calendar.DATE)<10)
+                        dayString = "0" + dateChosen.get(Calendar.DATE);
+                    else
+                        dayString = "" + dateChosen.get(Calendar.DATE);
+
+                    if(dateChosen.get(Calendar.MONTH)<10)
+                        monthString = "0" + dateChosen.get(Calendar.MONTH);
+                    else
+                        monthString = "" + dateChosen.get(Calendar.MONTH);
+
+                    dateOfBirthField.setText(dayString + "-" + monthString + "-" + dateChosen.get(Calendar.YEAR));
+                }
+            }
+            })*/
 
 
     }
