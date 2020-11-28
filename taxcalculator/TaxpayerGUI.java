@@ -5,13 +5,16 @@ import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Calendar;
 
-public class TaxpayerGUI extends JFrame{
+
+public class TaxpayerGUI extends JFrame implements ActionListener{
     private JTextField nameField;
     private JTextField ageField;
     private JTextField incomeField;
     private JTextField spouseIncomeField;
+    JMenu fileMenu;
+    JMenu statisticsMenu;
+    JMenuItem item=null;
     private Insets normalInsets = new Insets(10, 10, 0, 10);
     private Insets topInsets = new Insets(30, 10, 0, 10);
     private Insets bottomInsets = new Insets(60, 10, 0, 50);
@@ -24,15 +27,27 @@ public class TaxpayerGUI extends JFrame{
 
         super("Ireland Tax Calculator");
 
+        createFileMenu();
+        createStatisticsMenu();
+
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+        menuBar.add(fileMenu);
+        menuBar.add(statisticsMenu);
+
+        setSize(400,400 );
+        setVisible(true);
+
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(Color.WHITE);
 
 
         panel.add(Box.createVerticalStrut(40));
         panel.add(titlePanel());
         panel.add(detailsPanel());
         panel.add(Box.createVerticalStrut(40));
-        //panel.add(submitButtonPanel());
+        panel.add(createSubmitPanel());
         panel.add(Box.createVerticalStrut(20));
 
         add(panel);
@@ -50,9 +65,44 @@ public class TaxpayerGUI extends JFrame{
         new TaxpayerGUI();
     }
 
+    private void createFileMenu(){
+
+        fileMenu = new JMenu("File");
+
+        String itemNames[] = {"New","Save","Quit"};
+
+        for(int i=0;i<itemNames.length;i++){
+            item = new JMenuItem(itemNames[i]);
+            item.addActionListener(this);
+
+            fileMenu.add(item);
+        }
+    }
+
+
+    private void createStatisticsMenu(){
+
+        statisticsMenu = new JMenu("Statistics");
+
+        String itemNames[] = {"User Stats","Clear History"};
+
+        for(int i=0;i<itemNames.length;i++){
+            item = new JMenuItem(itemNames[i]);
+            item.addActionListener(this);
+
+            statisticsMenu.add(item);
+        }
+
+    }
+
+
     private JPanel titlePanel(){
 
         JPanel panel = new JPanel();
+
+        panel.setBackground(Color.orange);
+        panel.setForeground(Color.WHITE);
+        panel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.BLACK,Color.BLACK));
 
         JLabel titleLabel = new JLabel("Taxpayer Details");
         titleLabel.setFont(new Font("serif",Font.PLAIN,20));
@@ -188,50 +238,114 @@ public class TaxpayerGUI extends JFrame{
         addComponent(panel, dependantBox, 1, gridy++, 1, 1, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
+
+        return panel;
+
+    }
+
+    private JPanel createSubmitPanel() {
+
+        JPanel panel = new JPanel();
+
         JButton submitButton = new JButton("Calculate Tax");
         submitButton.setBackground(Color.ORANGE);
         submitButton.setForeground(Color.WHITE);
 
-        addComponent(panel, submitButton, 1, gridy++, 1, 1, bottomInsets,
-                GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
-
         submitButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                if(nameField.getText().equals("") || ageField.getText().equals("") || incomeField.getText().equals("") ||
-                        spouseIncomeField.getText().equals("")){
-                    JOptionPane.showMessageDialog(null, "Error !! All fields must be entered, Please try again",
-                            "Details Error",JOptionPane.ERROR_MESSAGE);
-                }
+                Taxpayer taxpayer;
+                char status, ratePRSI, childrenTaxCredit, blindTaxCredit, dependantRealativeTaxCredit;
+                double income, spouseIncome, totalTaxLiability, totalUSC, totalTaxCredits, totalPRSI;
+                double netTax, totalDeductions, totalIncome;
+                String name = "";
+                int age, i;
+
 
                 try{
-                    float income1 = Float.parseFloat(incomeField.getText());
-                    float spouseIncome = Float.parseFloat(spouseIncomeField.getText());
-                    int age = Integer.parseInt(ageField.getText()), i=0;
-                    String name;
+                    income = Float.parseFloat(incomeField.getText());
+                    spouseIncome = Float.parseFloat(spouseIncomeField.getText());
+                    age = Integer.parseInt(ageField.getText());
+
                     for(i=0; i<nameField.getText().length();i++){
                         if(Character.isDigit(nameField.getText().charAt(i)))
                             break;
-
                     }
                     if(i==nameField.getText().length())
-                         name = nameField.getText();
+                        name = nameField.getText();
+
+
+                    if(full.isSelected())
+                        ratePRSI = 'F';
+                    else
+                        ratePRSI = 'R';
+                    if(single.isSelected())
+                        status = 'S';
+                    else
+                        status = 'M';
+                    if(childrenNo.isSelected())    //Can also do does using the boolean result of the checked radio buttons
+                        childrenTaxCredit = 'N';
+                    else
+                        childrenTaxCredit = 'Y';
+                    if(blindNo.isSelected())
+                        blindTaxCredit = 'N';
+                    else
+                        blindTaxCredit = 'Y';
+                    if(dependantNo.isSelected())
+                        dependantRealativeTaxCredit = 'N';
+                    else
+                        dependantRealativeTaxCredit = 'Y';
+
+                    totalTaxLiability = Calculation.CalculateTaxLiability(income, status, spouseIncome);
+                    totalPRSI = Calculation.CalculatePRSI(income, spouseIncome, age, status, ratePRSI);
+                    totalTaxCredits = Calculation.CalculateTaxCredits(age, status, childrenTaxCredit, blindTaxCredit,
+                            dependantRealativeTaxCredit, income, spouseIncome);
+                    totalUSC = Calculation.CalculateUSC(income, spouseIncome, status, age);
+                    netTax = totalTaxLiability-totalTaxCredits;
+                    totalDeductions = netTax+totalPRSI+totalUSC;
+                    totalIncome = income+spouseIncome;
+                    taxpayer = new Taxpayer(name, age, status, totalIncome, totalTaxLiability, totalUSC, totalTaxCredits,
+                            totalPRSI, netTax, totalDeductions);
+
+                    JTextArea textArea = new JTextArea();
+                    Font font = new Font("SansSerif", Font.PLAIN,15);
+                    textArea.setFont(font);
+                    textArea.setBackground(Color.orange);
+                    textArea.setRows(10);
+                    textArea.append(taxpayer.toString());
+
+                    JOptionPane.showMessageDialog(null,textArea,"",JOptionPane.PLAIN_MESSAGE);
+
+
 
                 }
                 catch (Exception e1){
                     JOptionPane.showMessageDialog(null, "Error !! The rules of the Tax Calculator are as follows "+
-                            "\n\n-Name Field must be made up of characters(A-Z) only\n-Income fields must be a numeric value\n-All fields must "+
-                            "be entered",
+                                    "\n\n-Name Field must be made up of characters(A-Z) only\n-Income fields must be a numeric value\n-All fields must "+
+                                    "be entered",
                             "Details Error",JOptionPane.ERROR_MESSAGE);
 
                 }
+                nameField.setText("");
+                ageField.setText("");
+                spouseIncomeField.setText("0");
+                incomeField.setText("");
+                blindNo.setSelected(true);
+                dependantNo.setSelected(true);
+                childrenNo.setSelected(true);
+                single.setSelected(true);
+                full.setSelected(true);
+
             }
+
 
         });
 
 
-        return panel;
 
+        panel.add(submitButton);
+
+        return panel;
     }
 
     private void addComponent(Container container, Component component,
@@ -242,6 +356,28 @@ public class TaxpayerGUI extends JFrame{
                 gridwidth, gridheight, 0.0, 0.0, anchor, fill, insets, 5, 5);
 
         container.add(component, gbc);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+
+        int choice;
+
+        if(e.getActionCommand().equals("Quit")) {
+            choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit the Tax Calculator?",
+                    "Exiting Application", JOptionPane.YES_NO_CANCEL_OPTION);
+
+            if(choice==JOptionPane.YES_OPTION)
+                System.exit(0);
+        }
+        else if(e.getActionCommand().equals("Clear History")) {
+                    JOptionPane.showMessageDialog(null, "Clear History",
+                    "Clear History", JOptionPane.PLAIN_MESSAGE);
+        }
+        else if(e.getActionCommand().equals("User Stats")) {
+            JOptionPane.showMessageDialog(null, "User Stats",
+                    "User Stats", JOptionPane.PLAIN_MESSAGE);
+        }
+
     }
 
 
