@@ -1,6 +1,8 @@
 package taxcalculator;
 
-public class Taxpayer {
+import java.io.Serializable;
+
+public class Taxpayer implements Serializable{
     private String name;
     private int age;
     private char status;

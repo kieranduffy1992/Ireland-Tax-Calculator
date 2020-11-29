@@ -5,9 +5,13 @@ import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.ArrayList;
 
 
 public class TaxpayerGUI extends JFrame implements ActionListener{
+    ArrayList<Taxpayer> savedTaxpayers= new ArrayList<>();
+    private final File file = new File("taxcalculator/taxpayers.data");
     private JTextField nameField;
     private JTextField ageField;
     private JTextField incomeField;
@@ -50,7 +54,9 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
         panel.add(createSubmitPanel());
         panel.add(Box.createVerticalStrut(20));
 
+
         add(panel);
+
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(700,650);
@@ -250,99 +256,7 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
         JButton submitButton = new JButton("Calculate Tax");
         submitButton.setBackground(Color.ORANGE);
         submitButton.setForeground(Color.WHITE);
-
-        submitButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                Taxpayer taxpayer;
-                char status, ratePRSI, childrenTaxCredit, blindTaxCredit, dependantRealativeTaxCredit;
-                double income, spouseIncome, totalTaxLiability, totalUSC, totalTaxCredits, totalPRSI;
-                double netTax, totalDeductions, totalIncome;
-                String name = "";
-                int age, i;
-
-
-                try{
-                    income = Float.parseFloat(incomeField.getText());
-                    spouseIncome = Float.parseFloat(spouseIncomeField.getText());
-                    age = Integer.parseInt(ageField.getText());
-
-                    for(i=0; i<nameField.getText().length();i++){
-                        if(Character.isDigit(nameField.getText().charAt(i)))
-                            break;
-                    }
-                    if(i==nameField.getText().length())
-                        name = nameField.getText();
-
-
-                    if(full.isSelected())
-                        ratePRSI = 'F';
-                    else
-                        ratePRSI = 'R';
-                    if(single.isSelected())
-                        status = 'S';
-                    else
-                        status = 'M';
-                    if(childrenNo.isSelected())    //Can also do does using the boolean result of the checked radio buttons
-                        childrenTaxCredit = 'N';
-                    else
-                        childrenTaxCredit = 'Y';
-                    if(blindNo.isSelected())
-                        blindTaxCredit = 'N';
-                    else
-                        blindTaxCredit = 'Y';
-                    if(dependantNo.isSelected())
-                        dependantRealativeTaxCredit = 'N';
-                    else
-                        dependantRealativeTaxCredit = 'Y';
-
-                    totalTaxLiability = Calculation.CalculateTaxLiability(income, status, spouseIncome);
-                    totalPRSI = Calculation.CalculatePRSI(income, spouseIncome, age, status, ratePRSI);
-                    totalTaxCredits = Calculation.CalculateTaxCredits(age, status, childrenTaxCredit, blindTaxCredit,
-                            dependantRealativeTaxCredit, income, spouseIncome);
-                    totalUSC = Calculation.CalculateUSC(income, spouseIncome, status, age);
-                    netTax = totalTaxLiability-totalTaxCredits;
-                    totalDeductions = netTax+totalPRSI+totalUSC;
-                    totalIncome = income+spouseIncome;
-                    taxpayer = new Taxpayer(name, age, status, totalIncome, totalTaxLiability, totalUSC, totalTaxCredits,
-                            totalPRSI, netTax, totalDeductions);
-
-                    JTextArea textArea = new JTextArea();
-                    Font font = new Font("SansSerif", Font.PLAIN,15);
-                    textArea.setFont(font);
-                    textArea.setBackground(Color.orange);
-                    textArea.setRows(10);
-                    textArea.append(taxpayer.toString());
-
-                    JOptionPane.showMessageDialog(null,textArea,"",JOptionPane.PLAIN_MESSAGE);
-
-
-
-                }
-                catch (Exception e1){
-                    JOptionPane.showMessageDialog(null, "Error !! The rules of the Tax Calculator are as follows "+
-                                    "\n\n-Name Field must be made up of characters(A-Z) only\n-Income fields must be a numeric value\n-All fields must "+
-                                    "be entered",
-                            "Details Error",JOptionPane.ERROR_MESSAGE);
-
-                }
-                nameField.setText("");
-                ageField.setText("");
-                spouseIncomeField.setText("0");
-                incomeField.setText("");
-                blindNo.setSelected(true);
-                dependantNo.setSelected(true);
-                childrenNo.setSelected(true);
-                single.setSelected(true);
-                full.setSelected(true);
-
-            }
-
-
-        });
-
-
-
+        submitButton.addActionListener(this);
         panel.add(submitButton);
 
         return panel;
@@ -363,8 +277,8 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
         int choice;
 
         if(e.getActionCommand().equals("Quit")) {
-            choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit the Tax Calculator?",
-                    "Exiting Application", JOptionPane.YES_NO_CANCEL_OPTION);
+            choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit the Tax Calculator?"+
+                    " Unsaved data will be lost!", "Exiting Application", JOptionPane.YES_NO_CANCEL_OPTION);
 
             if(choice==JOptionPane.YES_OPTION)
                 System.exit(0);
@@ -373,10 +287,170 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                     JOptionPane.showMessageDialog(null, "Clear History",
                     "Clear History", JOptionPane.PLAIN_MESSAGE);
         }
-        else if(e.getActionCommand().equals("User Stats")) {
-            JOptionPane.showMessageDialog(null, "User Stats",
-                    "User Stats", JOptionPane.PLAIN_MESSAGE);
+        else if(e.getActionCommand().equals("New")){
+            nameField.setText("");
+            ageField.setText("");
+            spouseIncomeField.setText("0");
+            incomeField.setText("");
+            blindNo.setSelected(true);
+            dependantNo.setSelected(true);
+            childrenNo.setSelected(true);
+            single.setSelected(true);
+            full.setSelected(true);
+
         }
+
+        else if(e.getActionCommand().equals("Calculate Tax")){
+            Taxpayer taxpayer;
+            char status, ratePRSI, childrenTaxCredit, blindTaxCredit, dependantRealativeTaxCredit;
+            double income, spouseIncome, totalTaxLiability, totalUSC, totalTaxCredits, totalPRSI;
+            double netTax, totalDeductions, totalIncome;
+            String name = "";
+            int age, i;
+
+
+            try{
+                income = Float.parseFloat(incomeField.getText());
+                spouseIncome = Float.parseFloat(spouseIncomeField.getText());
+                age = Integer.parseInt(ageField.getText());
+
+                for(i=0; i<nameField.getText().length();i++){
+                    if(Character.isDigit(nameField.getText().charAt(i)))
+                        break;
+                }
+                if(i==nameField.getText().length())
+                    name = nameField.getText();
+
+
+                if(full.isSelected())
+                    ratePRSI = 'F';
+                else
+                    ratePRSI = 'R';
+                if(single.isSelected())
+                    status = 'S';
+                else
+                    status = 'M';
+                if(childrenNo.isSelected())    //Can also do does using the boolean result of the checked radio buttons
+                    childrenTaxCredit = 'N';
+                else
+                    childrenTaxCredit = 'Y';
+                if(blindNo.isSelected())
+                    blindTaxCredit = 'N';
+                else
+                    blindTaxCredit = 'Y';
+                if(dependantNo.isSelected())
+                    dependantRealativeTaxCredit = 'N';
+                else
+                    dependantRealativeTaxCredit = 'Y';
+
+                totalTaxLiability = Calculation.CalculateTaxLiability(income, status, spouseIncome);
+                totalPRSI = Calculation.CalculatePRSI(income, spouseIncome, age, status, ratePRSI);
+                totalTaxCredits = Calculation.CalculateTaxCredits(age, status, childrenTaxCredit, blindTaxCredit,
+                        dependantRealativeTaxCredit, income, spouseIncome);
+                totalUSC = Calculation.CalculateUSC(income, spouseIncome, status, age);
+                netTax = totalTaxLiability-totalTaxCredits;
+                totalDeductions = netTax+totalPRSI+totalUSC;
+                totalIncome = income+spouseIncome;
+                taxpayer = new Taxpayer(name, age, status, totalIncome, totalTaxLiability, totalUSC, totalTaxCredits,
+                        totalPRSI, netTax, totalDeductions);
+
+                JTextArea textArea = new JTextArea();
+                Font font = new Font("SansSerif", Font.PLAIN,15);
+                textArea.setFont(font);
+                textArea.setBackground(Color.orange);
+                textArea.setRows(10);
+                textArea.append(taxpayer.toString());
+
+                JOptionPane.showMessageDialog(null,textArea,"",JOptionPane.PLAIN_MESSAGE);
+
+                savedTaxpayers.add(taxpayer);
+
+            }
+            catch (Exception e1){
+                JOptionPane.showMessageDialog(null, "Error !! The rules of the Tax Calculator are as follows "+
+                                "\n\n-Name Field must be made up of characters(A-Z) only\n-Income fields must be a numeric value\n-All fields must "+
+                                "be entered", "Details Error",JOptionPane.ERROR_MESSAGE);
+
+            }
+        }
+        else if(e.getActionCommand().equals("Save")){
+
+            try {
+                    FileOutputStream outStream = new FileOutputStream(file);
+                    ObjectOutputStream objectOutStream = new ObjectOutputStream(outStream);
+                    objectOutStream.writeObject(savedTaxpayers);
+                    outStream.close();
+
+            }
+            catch(FileNotFoundException fnfe){
+                JOptionPane.showMessageDialog(null,"File could not be found!",
+                        "Problem Finding File!",JOptionPane.ERROR_MESSAGE);
+            }
+            catch(IOException ioe){
+                JOptionPane.showMessageDialog(null,"File could not be written!",
+                        "Problem Writing to File!",JOptionPane.ERROR_MESSAGE);
+            }
+
+
+        }
+
+        else if(e.getActionCommand().equals("User Stats")) {
+            ObjectInputStream objectInputStream=null;
+
+            try {
+                FileInputStream fileInputStream = new FileInputStream(file);
+
+
+                if(file.length()!= 0){
+                    objectInputStream = new ObjectInputStream(fileInputStream);
+                    JOptionPane.showMessageDialog(null, "Opening the file that stores Taxpayer details",
+                            "Opened File", JOptionPane.INFORMATION_MESSAGE);
+                }
+                else
+                    JOptionPane.showMessageDialog(null, "Can't read file as it is empty!",
+                            "Empty File", JOptionPane.ERROR_MESSAGE);
+            }
+            catch (IOException ioe) {
+                ioe.printStackTrace();
+                JOptionPane.showMessageDialog(null, "File could not be opened!",
+                        "Problem Opening the File!", JOptionPane.ERROR_MESSAGE);
+            }
+
+            if(objectInputStream==null)
+                return;
+
+            try{
+                ArrayList<Taxpayer> allTaxpayers = null;
+
+                allTaxpayers = (ArrayList<Taxpayer>) objectInputStream.readObject();
+
+
+                String taxpayerData="";
+
+                if(allTaxpayers!=null)
+                    for(Taxpayer taxpayer: allTaxpayers)
+                        taxpayerData+=taxpayer.getName() + "\n";
+
+                objectInputStream.close();
+
+                JOptionPane.showMessageDialog(null, "Details of Taxpayers read from file are:\n\n" + taxpayerData,
+                        "Opened File", JOptionPane.INFORMATION_MESSAGE);
+            }
+            catch (IOException ioe) {
+                ioe.printStackTrace();
+                JOptionPane.showMessageDialog(null, "File could not be read!",
+                        "Problem Reading From File!", JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException cnfe) {
+                cnfe.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Could not find the appropriate class!",
+                        "Problem Finding the Class!", JOptionPane.ERROR_MESSAGE);
+            }
+
+        }
+
+
+
+
 
     }
 
