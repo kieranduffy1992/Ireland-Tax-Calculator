@@ -1,7 +1,9 @@
 package taxcalculator;
 
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 
 
 public class TaxpayerGUI extends JFrame implements ActionListener{
+    Image background = Toolkit.getDefaultToolkit().createImage("taxcalculator\\Image1.jpg");
     ArrayList<Taxpayer> savedTaxpayers= new ArrayList<>();
     private final File file = new File("taxcalculator/taxpayers.data");
     private JTextField nameField;
@@ -43,22 +46,22 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
         setVisible(true);
 
         JPanel panel = new JPanel();
+
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(Color.WHITE);
-
-
-        panel.add(Box.createVerticalStrut(40));
+        panel.add(Box.createVerticalStrut(15));
         panel.add(titlePanel());
         panel.add(detailsPanel());
-        panel.add(Box.createVerticalStrut(40));
+        panel.add(Box.createVerticalStrut(10));
         panel.add(createSubmitPanel());
-        panel.add(Box.createVerticalStrut(20));
+        panel.add(Box.createVerticalStrut(10));
+
 
 
         add(panel);
 
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(700,650);
         setVisible(true);
         setResizable(false);
@@ -106,12 +109,12 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         JPanel panel = new JPanel();
 
-        panel.setBackground(Color.orange);
-        panel.setForeground(Color.WHITE);
-        panel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.BLACK,Color.BLACK));
+        panel.setBackground(Color.WHITE);
+
+
 
         JLabel titleLabel = new JLabel("Taxpayer Details");
-        titleLabel.setFont(new Font("serif",Font.PLAIN,20));
+        titleLabel.setFont(new Font("Courier",Font.BOLD,28));
 
         panel.add(titleLabel);
 
@@ -120,8 +123,21 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
     private JPanel detailsPanel(){
 
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(){
+            @Override
+            protected void paintComponent(Graphics g) { //stackoverflow to put in background image
+
+                super.paintComponent(g);
+                g.drawImage(background, 0, 0, getWidth(), getHeight(),null);
+            }
+
+        };
         panel.setLayout(new GridBagLayout());
+        //panel.setBackground(Color.decode("#F01919"));
+        panel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.WHITE,Color.WHITE));
+
+
+
 
         int gridy = 0;
 
@@ -165,13 +181,15 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         Box statusBox = Box.createHorizontalBox();
         ButtonGroup statusGroup = new ButtonGroup();
+        single.setBackground(Color.WHITE);
+        married.setBackground(Color.WHITE);
 
         statusGroup.add(single);
         statusGroup.add(married);
         statusBox.add(single);
         statusBox.add(married);
 
-        statusBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.ORANGE,Color.ORANGE));
+        statusBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.WHITE,Color.WHITE));
 
         addComponent(panel, statusBox, 1, gridy++, 1, 1, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
@@ -182,13 +200,15 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         Box prsiBox = Box.createHorizontalBox();
         ButtonGroup prsiGroup = new ButtonGroup();
+        full.setBackground(Color.WHITE);
+        reduced.setBackground(Color.WHITE);
 
         prsiGroup.add(full);
         prsiGroup.add(reduced);
         prsiBox.add(full);
         prsiBox.add(reduced);
 
-        prsiBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.ORANGE,Color.ORANGE));
+        prsiBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.WHITE,Color.WHITE));
 
         addComponent(panel, prsiBox, 1, gridy++, 1, 1, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
@@ -199,13 +219,15 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         Box childrenBox = Box.createHorizontalBox();
         ButtonGroup childrenGroup = new ButtonGroup();
+        childrenYes.setBackground(Color.WHITE);
+        childrenNo.setBackground(Color.WHITE);
 
         childrenGroup.add(childrenYes);
         childrenGroup.add(childrenNo);
         childrenBox.add(childrenYes);
         childrenBox.add(childrenNo);
 
-        childrenBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.ORANGE,Color.ORANGE));
+        childrenBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.WHITE,Color.WHITE));
 
         addComponent(panel, childrenBox, 1, gridy++, 1, 1, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
@@ -216,13 +238,15 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         Box blindBox = Box.createHorizontalBox();
         ButtonGroup blindGroup = new ButtonGroup();
+        blindYes.setBackground(Color.WHITE);
+        blindNo.setBackground(Color.WHITE);
 
         blindGroup.add(blindYes);
         blindGroup.add(blindNo);
         blindBox.add(blindYes);
         blindBox.add(blindNo);
 
-        blindBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.ORANGE,Color.ORANGE));
+        blindBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.WHITE,Color.WHITE));
 
         addComponent(panel, blindBox, 1, gridy++, 1, 1, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
@@ -233,13 +257,18 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         Box dependantBox = Box.createHorizontalBox();
         ButtonGroup dependantGroup = new ButtonGroup();
+        dependantYes.setBackground(Color.WHITE);
+        dependantNo.setBackground(Color.WHITE);
+
+
 
         dependantGroup.add(dependantYes);
         dependantGroup.add(dependantNo);
         dependantBox.add(dependantYes);
         dependantBox.add(dependantNo);
 
-        dependantBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.ORANGE,Color.ORANGE));
+        dependantBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.WHITE,Color.WHITE));
+
 
         addComponent(panel, dependantBox, 1, gridy++, 1, 1, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
@@ -252,10 +281,14 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
     private JPanel createSubmitPanel() {
 
         JPanel panel = new JPanel();
+        panel.setBackground(Color.WHITE);
 
         JButton submitButton = new JButton("Calculate Tax");
-        submitButton.setBackground(Color.ORANGE);
-        submitButton.setForeground(Color.WHITE);
+        submitButton.setBackground(Color.decode("#ECECEC"));
+        submitButton.setForeground(Color.BLACK);
+        Border raisedBorder = BorderFactory.createRaisedBevelBorder(); //stackoverflow
+        submitButton.setBorder(raisedBorder);
+        submitButton.setPreferredSize(new Dimension(140,50));
         submitButton.addActionListener(this);
         panel.add(submitButton);
 
@@ -380,6 +413,8 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                     ObjectOutputStream objectOutStream = new ObjectOutputStream(outStream);
                     objectOutStream.writeObject(savedTaxpayers);
                     outStream.close();
+                    JOptionPane.showMessageDialog(null,"Taxpayer Details saved Successfully","Success",
+                            JOptionPane.INFORMATION_MESSAGE);
 
             }
             catch(FileNotFoundException fnfe){
@@ -453,6 +488,8 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
 
     }
+
+
 
 
 }
