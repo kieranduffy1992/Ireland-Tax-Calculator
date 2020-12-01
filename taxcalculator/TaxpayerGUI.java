@@ -1,7 +1,6 @@
 package taxcalculator;
 
 import javax.swing.*;
-import javax.swing.border.AbstractBorder;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -22,10 +21,9 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
     JMenu fileMenu;
     JMenu statisticsMenu;
     JMenuItem item=null;
-    private Insets normalInsets = new Insets(10, 10, 0, 10);
-    private Insets topInsets = new Insets(30, 10, 0, 10);
-    private Insets bottomInsets = new Insets(60, 10, 0, 50);
-    private JRadioButton single = new JRadioButton("Single", true), married = new JRadioButton("Married"),
+    private final Insets normalInsets = new Insets(10, 10, 0, 10);
+    private final Insets topInsets = new Insets(30, 10, 0, 10);
+    private final JRadioButton single = new JRadioButton("Single", true), married = new JRadioButton("Married"),
             full = new JRadioButton("Full Rate", true), reduced = new JRadioButton("Reduced Rate"),
             childrenYes = new JRadioButton("Yes"), childrenNo = new JRadioButton("No", true), blindYes = new JRadioButton("Yes"),
             blindNo = new JRadioButton("No", true), dependantYes = new JRadioButton("Yes"), dependantNo = new JRadioButton("No", true);
@@ -45,7 +43,17 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
         setSize(400,400 );
         setVisible(true);
 
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(){
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                GradientPaint gradientPaint = new GradientPaint(220,180,Color.WHITE,80,180,Color.decode("#66B2FF"));
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setPaint(gradientPaint);
+                g2.fillRect(0,0,getWidth(), getHeight());
+            }
+
+        };
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(Color.WHITE);
@@ -56,21 +64,16 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
         panel.add(createSubmitPanel());
         panel.add(Box.createVerticalStrut(10));
 
-
-
         add(panel);
-
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(700,650);
         setVisible(true);
         setResizable(false);
 
-
-
     }
 
-    public static void main(String args[]){
+    public static void main(String[] args){
         new TaxpayerGUI();
     }
 
@@ -78,7 +81,7 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         fileMenu = new JMenu("File");
 
-        String itemNames[] = {"New","Save","Quit"};
+        String[] itemNames = {"New","Save","Quit"};
 
         for(int i=0;i<itemNames.length;i++){
             item = new JMenuItem(itemNames[i]);
@@ -93,7 +96,7 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         statisticsMenu = new JMenu("Statistics");
 
-        String itemNames[] = {"User Stats","Clear History"};
+        String[] itemNames = {"User Stats","Clear History"};
 
         for(int i=0;i<itemNames.length;i++){
             item = new JMenuItem(itemNames[i]);
@@ -107,10 +110,19 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
     private JPanel titlePanel(){
 
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(){
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                GradientPaint gradientPaint = new GradientPaint(220,180,Color.WHITE,80,180,Color.decode("#66B2FF"));
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setPaint(gradientPaint);
+                g2.fillRect(0,0,getWidth(), getHeight());
+            }
+
+        };
 
         panel.setBackground(Color.WHITE);
-
 
 
         JLabel titleLabel = new JLabel("Taxpayer Details");
@@ -133,7 +145,6 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         };
         panel.setLayout(new GridBagLayout());
-        //panel.setBackground(Color.decode("#F01919"));
         panel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.WHITE,Color.WHITE));
 
 
@@ -142,41 +153,41 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
         int gridy = 0;
 
         JLabel nameLabel = new JLabel("Name:");
-        addComponent(panel, nameLabel, 0, gridy, 1, 1, topInsets,
+        addComponent(panel, nameLabel, 0, gridy, topInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         nameField = new JTextField(25);
-        addComponent(panel, nameField, 1, gridy++, 1, 1, topInsets,
+        addComponent(panel, nameField, 1, gridy++, topInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         JLabel ageLabel = new JLabel("Age:");
-        addComponent(panel, ageLabel, 0, gridy, 1, 1, normalInsets,
+        addComponent(panel, ageLabel, 0, gridy, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         ageField = new JTextField(25);
-        addComponent(panel, ageField, 1, gridy++, 1, 1, normalInsets,
+        addComponent(panel, ageField, 1, gridy++, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
 
         JLabel incomeLabel = new JLabel("Gross Income:");
-        addComponent(panel, incomeLabel, 0, gridy, 1, 1, normalInsets,
+        addComponent(panel, incomeLabel, 0, gridy, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         incomeField = new JTextField(25);
-        addComponent(panel, incomeField, 1, gridy++, 1, 1, normalInsets,
+        addComponent(panel, incomeField, 1, gridy++, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         JLabel spouseIncomeLabel = new JLabel("Spouse Income (If Applicable):");
-        addComponent(panel, spouseIncomeLabel, 0, gridy, 1, 1, normalInsets,
+        addComponent(panel, spouseIncomeLabel, 0, gridy, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         spouseIncomeField = new JTextField(25);
         spouseIncomeField.setText("0");
-        addComponent(panel, spouseIncomeField, 1, gridy++, 1, 1, normalInsets,
+        addComponent(panel, spouseIncomeField, 1, gridy++, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         JLabel statusLabel = new JLabel("Select your Marital Status:");
-        addComponent(panel,statusLabel, 0, gridy, 1, 1, normalInsets,
+        addComponent(panel,statusLabel, 0, gridy, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         Box statusBox = Box.createHorizontalBox();
@@ -191,11 +202,11 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         statusBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.WHITE,Color.WHITE));
 
-        addComponent(panel, statusBox, 1, gridy++, 1, 1, normalInsets,
+        addComponent(panel, statusBox, 1, gridy++, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         JLabel prsiLabel = new JLabel("Select your PRSI Category:");
-        addComponent(panel,prsiLabel, 0, gridy, 1, 1, normalInsets,
+        addComponent(panel,prsiLabel, 0, gridy, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         Box prsiBox = Box.createHorizontalBox();
@@ -210,11 +221,11 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         prsiBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.WHITE,Color.WHITE));
 
-        addComponent(panel, prsiBox, 1, gridy++, 1, 1, normalInsets,
+        addComponent(panel, prsiBox, 1, gridy++, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         JLabel childrenLabel = new JLabel("Do You have dependant children:");
-        addComponent(panel,childrenLabel, 0, gridy, 1, 1, normalInsets,
+        addComponent(panel,childrenLabel, 0, gridy, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         Box childrenBox = Box.createHorizontalBox();
@@ -229,11 +240,11 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         childrenBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.WHITE,Color.WHITE));
 
-        addComponent(panel, childrenBox, 1, gridy++, 1, 1, normalInsets,
+        addComponent(panel, childrenBox, 1, gridy++, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         JLabel blindLabel = new JLabel("Are you entitled to Blind Person Tax Credit:");
-        addComponent(panel,blindLabel, 0, gridy, 1, 1, normalInsets,
+        addComponent(panel,blindLabel, 0, gridy, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         Box blindBox = Box.createHorizontalBox();
@@ -248,19 +259,17 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         blindBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.WHITE,Color.WHITE));
 
-        addComponent(panel, blindBox, 1, gridy++, 1, 1, normalInsets,
+        addComponent(panel, blindBox, 1, gridy++, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         JLabel dependantLabel = new JLabel("Are you entitled to Dependant Relative Tax Credit:");
-        addComponent(panel,dependantLabel, 0, gridy, 1, 1, normalInsets,
+        addComponent(panel,dependantLabel, 0, gridy, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
         Box dependantBox = Box.createHorizontalBox();
         ButtonGroup dependantGroup = new ButtonGroup();
         dependantYes.setBackground(Color.WHITE);
         dependantNo.setBackground(Color.WHITE);
-
-
 
         dependantGroup.add(dependantYes);
         dependantGroup.add(dependantNo);
@@ -270,7 +279,7 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
         dependantBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.WHITE,Color.WHITE));
 
 
-        addComponent(panel, dependantBox, 1, gridy++, 1, 1, normalInsets,
+        addComponent(panel, dependantBox, 1, gridy++, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
 
 
@@ -280,8 +289,17 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
     private JPanel createSubmitPanel() {
 
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.WHITE);
+        JPanel panel = new JPanel(){
+            @Override
+            protected void paintComponent(Graphics g) { //stackoverflow to put in background image
+                super.paintComponent(g);
+                GradientPaint gradientPaint = new GradientPaint(220,180,Color.WHITE,80,180,Color.decode("#66B2FF"));
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setPaint(gradientPaint);
+                g2.fillRect(0,0,getWidth(), getHeight());
+            }
+
+        };
 
         JButton submitButton = new JButton("Calculate Tax");
         submitButton.setBackground(Color.decode("#ECECEC"));
@@ -296,11 +314,11 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
     }
 
     private void addComponent(Container container, Component component,
-                              int gridx, int gridy, int gridwidth, int gridheight, Insets insets,
+                              int gridx, int gridy, Insets insets,
                               int anchor, int fill) {
 
         GridBagConstraints gbc = new GridBagConstraints(gridx, gridy,
-                gridwidth, gridheight, 0.0, 0.0, anchor, fill, insets, 5, 5);
+                1, 1, 0.0, 0.0, anchor, fill, insets, 5, 5);
 
         container.add(component, gbc);
     }
@@ -317,8 +335,78 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                 System.exit(0);
         }
         else if(e.getActionCommand().equals("Clear History")) {
-                    JOptionPane.showMessageDialog(null, "Clear History",
-                    "Clear History", JOptionPane.PLAIN_MESSAGE);
+
+            ObjectInputStream objectInputStream=null;
+
+            try {
+                FileInputStream fileInputStream = new FileInputStream(file);
+
+
+                if(file.length()!= 0){
+                    objectInputStream = new ObjectInputStream(fileInputStream);
+                    JOptionPane.showMessageDialog(null, "Opening the file that stores Taxpayer details",
+                            "Opened File", JOptionPane.INFORMATION_MESSAGE);
+                }
+                else
+                    JOptionPane.showMessageDialog(null, "Can't read file as it is empty!",
+                            "Empty File", JOptionPane.ERROR_MESSAGE);
+            }
+            catch (IOException ioe) {
+                ioe.printStackTrace();
+                JOptionPane.showMessageDialog(null, "File could not be opened!",
+                        "Problem Opening the File!", JOptionPane.ERROR_MESSAGE);
+            }
+
+
+
+            if(objectInputStream==null)
+                return;
+
+            try{
+                savedTaxpayers = (ArrayList<Taxpayer>) objectInputStream.readObject();
+
+                Taxpayer.deleteEntries(savedTaxpayers);
+
+                objectInputStream.close();
+
+                try{
+                    FileOutputStream outStream = new FileOutputStream(file);
+                    ObjectOutputStream objectOutStream = new ObjectOutputStream(outStream);
+                    objectOutStream.writeObject(savedTaxpayers);
+                    outStream.close();
+                    JOptionPane.showMessageDialog(null, "The amount of taxpayers on the file is now "+savedTaxpayers.size(),
+                            "History Cleared", JOptionPane.PLAIN_MESSAGE);
+
+
+                }
+                catch(FileNotFoundException fnfe){
+                    JOptionPane.showMessageDialog(null,"File could not be found!",
+                            "Problem Finding File!",JOptionPane.ERROR_MESSAGE);
+                }
+                catch(IOException ioe){
+                    JOptionPane.showMessageDialog(null,"File could not be written!",
+                            "Problem Writing to File!",JOptionPane.ERROR_MESSAGE);
+                }
+
+
+
+
+            }
+            catch (IOException ioe) {
+                ioe.printStackTrace();
+                JOptionPane.showMessageDialog(null, "File could not be read!",
+                        "Problem Reading From File!", JOptionPane.ERROR_MESSAGE);
+            } catch (ClassNotFoundException cnfe) {
+                cnfe.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Could not find the appropriate class!",
+                        "Problem Finding the Class!", JOptionPane.ERROR_MESSAGE);
+            }
+            catch (ArithmeticException a) {
+                a.printStackTrace();
+                JOptionPane.showMessageDialog(null, "File could not be opened (Arithmetic Exception)!",
+                        "Problem Opening the File!", JOptionPane.ERROR_MESSAGE); //Cannot do calculations
+            }
+
         }
         else if(e.getActionCommand().equals("New")){
             nameField.setText("");
@@ -341,11 +429,18 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
             String name = "";
             int age, i;
 
-
             try{
                 income = Float.parseFloat(incomeField.getText());
                 spouseIncome = Float.parseFloat(spouseIncomeField.getText());
+
                 age = Integer.parseInt(ageField.getText());
+                if(age>100 || age <17){
+                    JOptionPane.showMessageDialog(null,"Age must be Greater than 16 and less than 100",
+                            "Error",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+
 
                 for(i=0; i<nameField.getText().length();i++){
                     if(Character.isDigit(nameField.getText().charAt(i)))
@@ -353,6 +448,11 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                 }
                 if(i==nameField.getText().length())
                     name = nameField.getText();
+                else{
+                    JOptionPane.showMessageDialog(null,"Name field must be made up of Characters only(A-Z)",
+                            "Error",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
 
                 if(full.isSelected())
@@ -363,7 +463,7 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                     status = 'S';
                 else
                     status = 'M';
-                if(childrenNo.isSelected())    //Can also do does using the boolean result of the checked radio buttons
+                if(childrenNo.isSelected())    //Can also do does using the boolean result of the selected radio buttons
                     childrenTaxCredit = 'N';
                 else
                     childrenTaxCredit = 'Y';
@@ -388,10 +488,10 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                         totalPRSI, netTax, totalDeductions);
 
                 JTextArea textArea = new JTextArea();
+
                 Font font = new Font("SansSerif", Font.PLAIN,15);
                 textArea.setFont(font);
-                textArea.setBackground(Color.orange);
-                textArea.setRows(10);
+                textArea.setForeground(Color.BLACK);
                 textArea.append(taxpayer.toString());
 
                 JOptionPane.showMessageDialog(null,textArea,"",JOptionPane.PLAIN_MESSAGE);
@@ -413,8 +513,8 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                     ObjectOutputStream objectOutStream = new ObjectOutputStream(outStream);
                     objectOutStream.writeObject(savedTaxpayers);
                     outStream.close();
-                    JOptionPane.showMessageDialog(null,"Taxpayer Details saved Successfully","Success",
-                            JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null,"Taxpayer Details saved Successfully. The amount " +
+                            "of Taxpayers on file is now "+savedTaxpayers.size(),"Success", JOptionPane.INFORMATION_MESSAGE);
 
             }
             catch(FileNotFoundException fnfe){
@@ -425,7 +525,6 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                 JOptionPane.showMessageDialog(null,"File could not be written!",
                         "Problem Writing to File!",JOptionPane.ERROR_MESSAGE);
             }
-
 
         }
 
@@ -439,7 +538,7 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                 if(file.length()!= 0){
                     objectInputStream = new ObjectInputStream(fileInputStream);
                     JOptionPane.showMessageDialog(null, "Opening the file that stores Taxpayer details",
-                            "Opened File", JOptionPane.INFORMATION_MESSAGE);
+                            "Opened File", JOptionPane.PLAIN_MESSAGE);
                 }
                 else
                     JOptionPane.showMessageDialog(null, "Can't read file as it is empty!",
@@ -455,21 +554,24 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                 return;
 
             try{
-                ArrayList<Taxpayer> allTaxpayers = null;
+                double averageIncome, totalLiability, totalUSC;
+                double averageAge;
 
-                allTaxpayers = (ArrayList<Taxpayer>) objectInputStream.readObject();
+                savedTaxpayers = (ArrayList<Taxpayer>) objectInputStream.readObject();
 
-
-                String taxpayerData="";
-
-                if(allTaxpayers!=null)
-                    for(Taxpayer taxpayer: allTaxpayers)
-                        taxpayerData+=taxpayer.getName() + "\n";
+                averageIncome=Taxpayer.getAverageIncome(savedTaxpayers);
+                averageAge=Taxpayer.getAverageAge(savedTaxpayers);
+                totalLiability=Taxpayer.getAverageTaxLiability(savedTaxpayers);
+                totalUSC=Taxpayer.getTotalUSC(savedTaxpayers);
 
                 objectInputStream.close();
 
-                JOptionPane.showMessageDialog(null, "Details of Taxpayers read from file are:\n\n" + taxpayerData,
-                        "Opened File", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Average Income of Taxpayers read from file is: \u20ac" +
+                                String.format("%.2f",averageIncome)+ "\nAverage age of the Taxpayers who have used the application is: " +
+                                String.format("%.2f",averageAge)+ "\nAverage Tax Liability of the Taxpayers who have used the application is: \u20ac" +
+                                String.format("%.2f",totalLiability ) + "\nTotal USC of the Taxpayers who have used the application is: \u20ac" +
+                                String.format("%.2f",totalUSC), "Opened File", JOptionPane.INFORMATION_MESSAGE);
+
             }
             catch (IOException ioe) {
                 ioe.printStackTrace();
@@ -480,16 +582,14 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                 JOptionPane.showMessageDialog(null, "Could not find the appropriate class!",
                         "Problem Finding the Class!", JOptionPane.ERROR_MESSAGE);
             }
+            catch (ArithmeticException a) {
+                a.printStackTrace();
+                JOptionPane.showMessageDialog(null, "File could not be opened (Arithmetic Exception)!",
+                        "Problem Opening the File!", JOptionPane.ERROR_MESSAGE); //Cannot do calculations
+            }
 
         }
 
-
-
-
-
     }
-
-
-
 
 }

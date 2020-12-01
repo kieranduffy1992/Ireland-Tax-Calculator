@@ -55,7 +55,7 @@ public class Calculation {
         final double homeCarer=1600;
         final double dependantCredit=70;
         final double blindCredit=1650;
-        double totalTaxCredits = 0;
+        double totalTaxCredits;
 
         if(age >= 65){
             if(status=='S'){
@@ -125,7 +125,7 @@ public class Calculation {
 
     public static double CalculatePRSI(double income1, double income2, int age, char status, char category){
 
-        double totalPRSI = 0, sixthOfEarnings,PRSI4PerCent, spouse1PRSI, spouse2PRSI;
+        double totalPRSI, sixthOfEarnings,PRSI4PerCent, spouse1PRSI, spouse2PRSI;
         double weeklyIncome1=income1/52;
         double weeklyIncome2=income2/52;
         final double maxPRSICredit=12, fullRate=.04, reducedRate=0.009;

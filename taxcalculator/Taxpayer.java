@@ -1,6 +1,8 @@
 package taxcalculator;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Taxpayer implements Serializable{
     private String name;
@@ -40,9 +42,7 @@ public class Taxpayer implements Serializable{
         return age;
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
+    public void setAge(int age) { this.age = age;}
 
     public char getStatus() {
         return status;
@@ -111,6 +111,87 @@ public class Taxpayer implements Serializable{
         this.netTax = netTax;
     }
 
+    public static double getAverageIncome(ArrayList<Taxpayer> allTaxpayers) {
+        double totalIncome = 0;
+
+
+        if (allTaxpayers == null) {
+            return 0;
+        }
+        else {
+            for (Taxpayer t : allTaxpayers) {
+                totalIncome += t.getIncome();
+            }
+
+            return totalIncome / allTaxpayers.size();
+
+        }
+
+    }
+
+    public static double getAverageAge(ArrayList<Taxpayer> allTaxpayers){
+        double totalAge = 0;
+
+
+        if (allTaxpayers == null) {
+            return 0;
+        }
+        else {
+            for (Taxpayer t : allTaxpayers) {
+                totalAge += t.getAge();
+
+            }
+
+            return totalAge / allTaxpayers.size();
+
+        }
+
+    }
+
+    public static double getAverageTaxLiability(ArrayList<Taxpayer> allTaxpayers) {
+        double totalTaxLiability = 0;
+
+
+        if (allTaxpayers == null) {
+            return 0;
+        } else {
+            for (Taxpayer t : allTaxpayers) {
+                totalTaxLiability += t.getTaxLiability();
+            }
+
+            return totalTaxLiability / allTaxpayers.size();
+
+        }
+    }
+
+    public static double getTotalUSC(ArrayList<Taxpayer> allTaxpayers) {
+        double totalUSC = 0;
+
+
+        if (allTaxpayers == null) {
+            return 0;
+        } else {
+            for (Taxpayer t : allTaxpayers) {
+                totalUSC += t.getIncome();
+
+            }
+
+            return totalUSC;
+
+        }
+    }
+
+    public static void deleteEntries(ArrayList<Taxpayer> allTaxpayers){
+        Iterator<Taxpayer> iterator = allTaxpayers.iterator();
+
+        while (iterator.hasNext()) {
+            Taxpayer t = iterator.next();
+
+            if (t != null)
+                iterator.remove();
+        }
+
+    }
 
     @Override
     public String toString() {
