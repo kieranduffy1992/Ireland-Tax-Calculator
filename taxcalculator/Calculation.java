@@ -293,10 +293,7 @@ public class Calculation {
 
                     totalUSC = spouse1USC+spouse2USC;
 
-
                 }
-
-
         }
         return totalUSC;
     }

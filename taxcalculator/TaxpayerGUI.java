@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 
 public class TaxpayerGUI extends JFrame implements ActionListener{
-    Image background = Toolkit.getDefaultToolkit().createImage("taxcalculator\\Image1.jpg");
+    Image background = Toolkit.getDefaultToolkit().createImage("taxcalculator\\Image1.jpg"); //stackoverflow
     ArrayList<Taxpayer> savedTaxpayers= new ArrayList<>();
     private final File file = new File("taxcalculator/taxpayers.data");
     private JTextField nameField;
@@ -41,7 +41,6 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
         menuBar.add(statisticsMenu);
 
         setSize(400,400 );
-        setVisible(true);
 
         JPanel panel = new JPanel(){
             @Override
@@ -65,11 +64,10 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
         panel.add(Box.createVerticalStrut(10));
 
         add(panel);
-
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(700,650);
-        setVisible(true);
         setResizable(false);
+        setVisible(true);
 
     }
 
@@ -124,7 +122,6 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         panel.setBackground(Color.WHITE);
 
-
         JLabel titleLabel = new JLabel("Taxpayer Details");
         titleLabel.setFont(new Font("Courier",Font.BOLD,28));
 
@@ -140,15 +137,13 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
             protected void paintComponent(Graphics g) { //stackoverflow to put in background image
 
                 super.paintComponent(g);
-                g.drawImage(background, 0, 0, getWidth(), getHeight(),null);
+                g.drawImage(background, 0, 0, getWidth(), getHeight(),this);
             }
-
         };
+
+
         panel.setLayout(new GridBagLayout());
         panel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.WHITE,Color.WHITE));
-
-
-
 
         int gridy = 0;
 
@@ -167,7 +162,6 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
         ageField = new JTextField(25);
         addComponent(panel, ageField, 1, gridy++, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
-
 
         JLabel incomeLabel = new JLabel("Gross Income:");
         addComponent(panel, incomeLabel, 0, gridy, normalInsets,
@@ -278,10 +272,8 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         dependantBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED,Color.WHITE,Color.WHITE));
 
-
         addComponent(panel, dependantBox, 1, gridy++, normalInsets,
                 GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL);
-
 
         return panel;
 
@@ -357,8 +349,6 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                         "Problem Opening the File!", JOptionPane.ERROR_MESSAGE);
             }
 
-
-
             if(objectInputStream==null)
                 return;
 
@@ -387,9 +377,6 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                     JOptionPane.showMessageDialog(null,"File could not be written!",
                             "Problem Writing to File!",JOptionPane.ERROR_MESSAGE);
                 }
-
-
-
 
             }
             catch (IOException ioe) {
@@ -440,8 +427,6 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                     return;
                 }
 
-
-
                 for(i=0; i<nameField.getText().length();i++){
                     if(Character.isDigit(nameField.getText().charAt(i)))
                         break;
@@ -491,8 +476,10 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
                 Font font = new Font("SansSerif", Font.PLAIN,15);
                 textArea.setFont(font);
+                textArea.setBackground(Color.decode("#6FF6FF"));
                 textArea.setForeground(Color.BLACK);
                 textArea.append(taxpayer.toString());
+
 
                 JOptionPane.showMessageDialog(null,textArea,"",JOptionPane.PLAIN_MESSAGE);
 
