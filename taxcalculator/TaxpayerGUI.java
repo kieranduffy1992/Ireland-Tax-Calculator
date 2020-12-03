@@ -11,7 +11,15 @@ import java.util.ArrayList;
 
 
 public class TaxpayerGUI extends JFrame implements ActionListener{
-    Image background = Toolkit.getDefaultToolkit().createImage("taxcalculator\\Image1.jpg"); //stackoverflow
+    /****************************
+     * Title:Simplest way to set image as JPanel background
+     * Author: Sage
+     * Site Owner: stackoverflow.com
+     * Date: 2013
+     * Version: edited Oct 1st 2013
+     * Availability: https://stackoverflow.com/questions/19125707/simplest-way-to-set-image-as-jpanel-background
+     ****************************/
+    Image background = Toolkit.getDefaultToolkit().createImage("taxcalculator\\Image1.jpg");
     ArrayList<Taxpayer> savedTaxpayers= new ArrayList<>();
     private final File file = new File("taxcalculator/taxpayers.data");
     private JTextField nameField;
@@ -132,9 +140,18 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
     private JPanel detailsPanel(){
 
+        /****************************
+         * Title:Simplest way to set image as JPanel background
+         * Author: Sage
+         * Site Owner: stackoverflow.com
+         * Date: 2013
+         * Version: edited Oct 1st 2013
+         * Availability: https://stackoverflow.com/questions/19125707/simplest-way-to-set-image-as-jpanel-background
+         ****************************/
+
         JPanel panel = new JPanel(){
             @Override
-            protected void paintComponent(Graphics g) { //stackoverflow to put in background image
+            protected void paintComponent(Graphics g) {
 
                 super.paintComponent(g);
                 g.drawImage(background, 0, 0, getWidth(), getHeight(),this);
@@ -283,7 +300,7 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
 
         JPanel panel = new JPanel(){
             @Override
-            protected void paintComponent(Graphics g) { //stackoverflow to put in background image
+            protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 GradientPaint gradientPaint = new GradientPaint(220,180,Color.WHITE,80,180,Color.decode("#66B2FF"));
                 Graphics2D g2 = (Graphics2D) g;
@@ -296,6 +313,14 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
         JButton submitButton = new JButton("Calculate Tax");
         submitButton.setBackground(Color.decode("#ECECEC"));
         submitButton.setForeground(Color.BLACK);
+        /****************************
+         * Title:BorderLayout showing border lines
+         * Author: Sam Lee
+         * Site Owner: stackoverflow.com
+         * Date: 2015
+         * Version: edited May 6th 2015
+         * Availability: https://stackoverflow.com/questions/30078618/borderlayout-showing-border-lines/30558915
+         ****************************/
         Border raisedBorder = BorderFactory.createRaisedBevelBorder(); //stackoverflow
         submitButton.setBorder(raisedBorder);
         submitButton.setPreferredSize(new Dimension(140,50));
@@ -557,7 +582,7 @@ public class TaxpayerGUI extends JFrame implements ActionListener{
                                 String.format("%.2f",averageIncome)+ "\nAverage age of the Taxpayers who have used the application is: " +
                                 String.format("%.2f",averageAge)+ "\nAverage Tax Liability of the Taxpayers who have used the application is: \u20ac" +
                                 String.format("%.2f",totalLiability ) + "\nTotal USC of the Taxpayers who have used the application is: \u20ac" +
-                                String.format("%.2f",totalUSC), "Opened File", JOptionPane.INFORMATION_MESSAGE);
+                                String.format("%.2f",totalUSC), "Saved User Stats", JOptionPane.INFORMATION_MESSAGE);
 
             }
             catch (IOException ioe) {
